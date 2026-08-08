@@ -1,9 +1,11 @@
 use std::sync::Arc;
+use axum::routing::post;
 use axum::{ routing::get, Router };
 use tokio::net::TcpListener;
 use tokio::task::JoinHandle;
 
 mod vllm;
+mod openai;
 
 pub const DEFAULT_MODELS: &'static str =
     r#"{"object": "list", "data": [{"object": "model", "id": "mocked-model", "created": 1715616000, "owned_by": "system"}]}"#;
@@ -59,6 +61,8 @@ impl LlmMockBuilder {
             let app = Router::new()
                 .route("/health", get(vllm::handle_health))
                 .route("/v1/models", get(vllm::handle_models))
+                .with_state(state.clone())
+                .route("/v1/chat/completions", post(vllm::handle_chat_completions))
                 .with_state(state.clone());
 
             axum::serve(listener, app).await?;

@@ -35,3 +35,28 @@ async fn test_models() {
     assert_eq!(response.status(), reqwest::StatusCode::OK);
     assert_eq!(response.text().await.unwrap(), "foobar");
 }
+
+#[tokio::test]
+async fn test_chat_completions() {
+    let builder = LlmMockBuilder::new();
+    let builder = builder.with_models("foobar".to_string());
+    let mock = builder.start().await.unwrap();
+    let client = reqwest::Client::new();
+
+    // Bad request (missing "model") should result in a 400
+    let response = client
+        .post(&format!("http://localhost:{}/v1/chat/completions", mock.port()))
+        .body(r#"{"messages": [{"role": "user", "content": "hello"}]}"#)
+        .send().await
+        .unwrap();
+    assert!(response.status().is_client_error());
+    assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
+
+    let response = client
+        .post(&format!("http://localhost:{}/v1/chat/completions", mock.port()))
+        .body(r#"{"model": "mocked-model", "messages": [{"role": "user", "content": "hello"}]}"#)
+        .send().await
+        .unwrap();
+    assert!(response.status().is_success());
+    assert_eq!(response.status(), reqwest::StatusCode::OK);
+}
