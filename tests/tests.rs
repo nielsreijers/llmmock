@@ -26,7 +26,7 @@ async fn test_models() {
 
     // Act: Send a real HTTP request to the assigned port
     let response = client
-        .get(&format!("http://localhost:{}/models", mock.port()))
+        .get(&format!("http://localhost:{}/v1/models", mock.port()))
         .send().await
         .unwrap();
 

@@ -58,7 +58,7 @@ impl LlmMockBuilder {
 
             let app = Router::new()
                 .route("/health", get(vllm::handle_health))
-                .route("/models", get(vllm::handle_models))
+                .route("/v1/models", get(vllm::handle_models))
                 .with_state(state.clone());
 
             axum::serve(listener, app).await?;
