@@ -1,6 +1,6 @@
 use std::println;
-
 use clap::Parser;
+use axum::{ routing::get, Router };
 
 #[derive(Debug, Parser)]
 pub struct Cli {
@@ -8,7 +8,16 @@ pub struct Cli {
     pub port: u16,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let cli = Cli::parse();
-    println!("Listening on port {}...", cli.port);
+    let app = Router::new().route(
+        "/",
+        get(|| async { "Hello, World!" })
+    );
+    let addr = format!("0.0.0.0:{}", cli.port);
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+
+    println!("Listening on http://localhost:{}", cli.port);
+    axum::serve(listener, app).await.unwrap();
 }
