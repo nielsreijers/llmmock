@@ -1,34 +1,30 @@
-use std::{ println, sync::Arc };
+use std::println;
 use clap::Parser;
-use axum::{ routing::get, Router };
-
-mod vllm;
+use llmmock::{ DEFAULT_MODELS, LlmMockBuilder };
 
 #[derive(Debug, Parser)]
 pub struct Cli {
-    #[arg(short = 'p', long, default_value = "8080")]
-    pub port: u16,
+    #[arg(short = 'p', long)]
+    pub port: Option<u16>,
 
-    #[arg(
-        short = 'm',
-        long,
-        default_value = r#"{"object": "list", "data": [{"object": "model", "id": "mocked-model", "created": 1715616000, "owned_by": "system"}]}"#
-    )]
+    #[arg(short = 'm', long, default_value = DEFAULT_MODELS)]
     pub models: String,
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
-    let state = Arc::new(cli);
 
-    let app = Router::new()
-        .route("/health", get(vllm::handle_health))
-        .route("/models", get(vllm::handle_models))
-        .with_state(state.clone());
-    let addr = format!("0.0.0.0:{}", state.port);
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    let builder = LlmMockBuilder::new();
 
-    println!("Listening on http://localhost:{}", state.port);
-    axum::serve(listener, app).await.unwrap();
+    let builder = builder.with_models(cli.models);
+
+    let builder = match cli.port {
+        None => builder,
+        Some(port) => builder.with_port(port),
+    };
+
+    let mock = builder.start().await?;
+    println!("Listening on http://localhost:{}", mock.port());
+    mock.join().await
 }
