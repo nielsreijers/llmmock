@@ -41,22 +41,49 @@ async fn test_chat_completions() {
     let builder = LlmMockBuilder::new();
     let builder = builder.with_models("foobar".to_string());
     let mock = builder.start().await.unwrap();
-    let client = reqwest::Client::new();
+
+    let test = async |req: &'static str, ok: bool| {
+        let client = reqwest::Client::new();
+        let response = client
+            .post(&format!("http://localhost:{}/v1/chat/completions", mock.port()))
+            .body(req)
+            .send().await
+            .unwrap();
+        let status = response.status();
+        let body = match response.text().await {
+            Ok(body) => body,
+            Err(err) => err.to_string(),
+        };
+
+        if ok {
+            assert!(status.is_success(), "{status}: {body}");
+            assert_eq!(status, reqwest::StatusCode::OK, "{status}: {body}");
+        } else {
+            assert!(status.is_client_error(), "{status}: {body}");
+            assert_eq!(status, reqwest::StatusCode::BAD_REQUEST, "{status}: {body}");
+        }
+    };
+    let test_ok = async |req| test(req, true).await;
+    let test_nok = async |req| test(req, false).await;
+
+    // Ok request
+    test_ok(
+        r#"{
+        "model": "mocked-model",
+        "messages": [
+            {"role": "developer", "content": "hello 1"},
+            {"role": "developer", "content": [
+                {"type": "text", "text": "hello 3", "prompt_cache_breakpoint": {"mode": "explicit"}},
+                {"type": "text", "text": "hello 4"}
+            ]},
+            {"role": "system", "content": "hello 5"},
+            {"role": "system", "content": [
+                {"type": "text", "text": "hello 6", "prompt_cache_breakpoint": {"mode": "explicit"}},
+                {"type": "text", "text": "hello 7"}
+            ]}
+        ]}"#
+    ).await;
 
     // Bad request (missing "model") should result in a 400
-    let response = client
-        .post(&format!("http://localhost:{}/v1/chat/completions", mock.port()))
-        .body(r#"{"messages": [{"role": "user", "content": "hello"}]}"#)
-        .send().await
-        .unwrap();
-    assert!(response.status().is_client_error());
-    assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
-
-    let response = client
-        .post(&format!("http://localhost:{}/v1/chat/completions", mock.port()))
-        .body(r#"{"model": "mocked-model", "messages": [{"role": "user", "content": "hello"}]}"#)
-        .send().await
-        .unwrap();
-    assert!(response.status().is_success());
-    assert_eq!(response.status(), reqwest::StatusCode::OK);
+    test_nok(r#"{"messages": [{"role": "user", "content": "hello"}]}"#).await;
 }
