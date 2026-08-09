@@ -23,8 +23,8 @@ impl IntoResponse for ApiError {
             ApiError::BadRequest(message) =>
                 (
                     StatusCode::BAD_REQUEST,
-                    openai::ErrorResponse {
-                        error: openai::ErrorBody {
+                    openai::resp::ErrorResponse {
+                        error: openai::resp::ErrorBody {
                             message,
                             r#type: "invalid_request_error".into(),
                             param: None,
@@ -36,8 +36,8 @@ impl IntoResponse for ApiError {
             ApiError::Internal(message) =>
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    openai::ErrorResponse {
-                        error: openai::ErrorBody {
+                    openai::resp::ErrorResponse {
+                        error: openai::resp::ErrorBody {
                             message,
                             r#type: "server_error".into(),
                             param: None,
@@ -65,7 +65,7 @@ pub(crate) async fn handle_chat_completions(
 ) -> Result<Response, ApiError> {
     let body = String::from_utf8_lossy(&body);
 
-    let request: openai::ChatCompletionRequest = serde_json
+    let request: openai::req::ChatCompletionRequest = serde_json
         ::from_str(&body)
         .map_err(|err| ApiError::BadRequest(err.to_string()))?;
 
