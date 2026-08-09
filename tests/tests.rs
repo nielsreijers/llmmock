@@ -115,6 +115,46 @@ async fn test_chat_completions() {
         ]}"#
     ).await;
 
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "audio": {"format": "wav", "voice": "alloy"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "audio": {"format": "wav", "voice": {"id": "hello world"}}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "function_call": "auto"
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "function_call": {"name": "hello world"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "frequency_penalty": 0.0
+        }"#
+    ).await;
+
     // Bad request (missing "model") should result in a 400
     test_nok(r#"{"messages": [{"role": "user", "content": "hello"}]}"#).await;
 }

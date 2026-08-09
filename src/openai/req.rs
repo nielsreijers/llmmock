@@ -4,6 +4,9 @@ use serde_derive::Deserialize;
 pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub messages: Vec<ChatCompletionMessageParam>,
     pub model: String,
+    #[allow(unused)] pub audio: Option<ChatCompletionAudioParam>,
+    #[allow(unused)] pub frequency_penalty: Option<f32>,
+    #[allow(unused)] pub function_call: Option<ChatCompletionFunctionCallOption>,
     #[allow(unused)] pub stream: Option<bool>,
 }
 
@@ -220,4 +223,65 @@ pub(crate) enum ChatCompletionPromptCacheBreakpointMode {
 #[derive(Debug, Deserialize)]
 pub(crate) struct ChatCompletionPromptCacheBreakpoint {
     #[allow(unused)] mode: ChatCompletionPromptCacheBreakpointMode,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionAudioParamFormat {
+    Wav,
+    Aac,
+    Mp3,
+    Flac,
+    Opus,
+    Pcm16,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionAudioParamVoiceBuiltin {
+    Alloy,
+    Ash,
+    Ballad,
+    Coral,
+    Echo,
+    Sage,
+    Shimmer,
+    Verse,
+    Marin,
+    Cedar,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionAudioParamVoiceCustom {
+    #[allow(unused)] id: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub(crate) enum ChatCompletionAudioParamVoice {
+    #[allow(unused)] Builtin(ChatCompletionAudioParamVoiceBuiltin),
+    #[allow(unused)] Custom(ChatCompletionAudioParamVoiceCustom),
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionAudioParam {
+    #[allow(unused)] format: ChatCompletionAudioParamFormat,
+    #[allow(unused)] voice: ChatCompletionAudioParamVoice,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionFunctionCallOptionBuiltin {
+    #[allow(unused)] None,
+    #[allow(unused)] Auto,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionFunctionCallOption {
+    #[allow(unused)] Builtin(ChatCompletionFunctionCallOptionBuiltin),
+    #[allow(unused)] Name {
+        name: String,
+    },
 }
