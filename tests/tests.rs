@@ -71,25 +71,39 @@ async fn test_chat_completions() {
         r#"{
         "model": "mocked-model",
         "messages": [
-            {"role": "developer", "content": "hello 1"},
+            {"role": "developer", "content": "hello world"},
             {"role": "developer", "name": "myname", "content": [
-                {"type": "text", "text": "hello 3", "prompt_cache_breakpoint": {"mode": "explicit"}},
-                {"type": "text", "text": "hello 4"}
+                {"type": "text", "text": "hello world", "prompt_cache_breakpoint": {"mode": "explicit"}},
+                {"type": "text", "text": "hello world"}
             ]},
-            {"role": "system", "content": "hello 5"},
+            {"role": "system", "content": "hello world"},
             {"role": "system", "name": "myname", "content": [
-                {"type": "text", "text": "hello 6"},
-                {"type": "text", "text": "hello 7"}
+                {"type": "text", "text": "hello world"},
+                {"type": "text", "text": "hello world"}
             ]},
-            {"role": "user", "content": "hello 8"},
+            {"role": "user", "content": "hello world"},
             {"role": "user", "name": "myname", "content": [
-                {"type": "text", "text": "hello 9"},
-                {"type": "text", "text": "hello 10"},
-                {"type": "image_url", "image_url": {"url": "hello 11"}},
-                {"type": "image_url", "image_url": {"url": "hello 12", "detail": "low"}},
-                {"type": "input_audio", "input_audio": {"data": "hello 13", "format": "wav"}},
-                {"type": "file", "file": {"file_data": "hello 14", "file_id": "hello 15", "filename": "hello 16"}},
+                {"type": "text", "text": "hello world"},
+                {"type": "text", "text": "hello world"},
+                {"type": "image_url", "image_url": {"url": "hello world"}},
+                {"type": "image_url", "image_url": {"url": "hello world", "detail": "low"}},
+                {"type": "input_audio", "input_audio": {"data": "hello world", "format": "wav"}},
+                {"type": "file", "file": {"file_data": "hello world", "file_id": "hello world", "filename": "hello world"}},
                 {"type": "file", "file": {}}
+            ]},
+            {"role": "assistant", "content": "hello world"},
+            {"role": "assistant", "content": "hello world", "audio": {"id": "hello world"}},
+            {"role": "assistant", "name": "myname", "content": [
+                {"type": "text", "text": "hello world"}
+            ]},
+            {"role": "assistant", "name": "myname", "content": [
+                {"type": "refusal", "refusal": "hello world"}
+            ]},
+            {"role": "assistant", "function_call": {"arguments": "hello world", "name": "hello world"}},
+            {"role": "assistant", "refusal": "hello world"},
+            {"role": "assistant", "tool_calls": [
+                {"id": "hello world", "type": "function", "function": {"arguments": "hello world", "name": "hello world"}},
+                {"id": "hello world", "type": "custom", "custom": {"input": "hello world", "name": "hello world"}}
             ]}
         ]}"#
     ).await;

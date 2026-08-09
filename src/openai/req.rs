@@ -14,6 +14,7 @@ pub(crate) enum ChatCompletionMessageParam {
     #[allow(unused)] Developer(ChatCompletionDeveloperMessageParam),
     #[allow(unused)] System(ChatCompletionSystemMessageParam),
     #[allow(unused)] User(ChatCompletionUserMessageParam),
+    #[allow(unused)] Assistant(ChatCompletionAssistantMessageParam),
 }
 
 #[derive(Debug, Deserialize)]
@@ -110,6 +111,31 @@ pub(crate) struct FileContentPart {
 }
 
 #[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionContentPartRefusal {
+    #[allow(unused)] pub refusal: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct Audio {
+    #[allow(unused)] pub id: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionContentPartTextOrRefusal {
+    #[allow(unused)] Text(ChatCompletionContentPartText),
+    #[allow(unused)] Refusal(ChatCompletionContentPartRefusal),
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub(crate) enum ChatCompletionContentTextOrRefusal {
+    #[allow(unused)] Text(String),
+    #[allow(unused)] Structured(Vec<ChatCompletionContentPartTextOrRefusal>),
+}
+
+#[derive(Debug, Deserialize)]
 pub(crate) struct ChatCompletionDeveloperMessageParam {
     #[allow(unused)] pub content: ChatCompletionContentTextOnly,
     #[allow(unused)] pub name: Option<String>,
@@ -125,6 +151,50 @@ pub(crate) struct ChatCompletionSystemMessageParam {
 pub(crate) struct ChatCompletionUserMessageParam {
     #[allow(unused)] pub content: ChatCompletionContent,
     #[allow(unused)] pub name: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct FunctionCall {
+    #[allow(unused)] pub arguments: String,
+    #[allow(unused)] pub name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct FunctionToolCall {
+    #[allow(unused)] pub id: String,
+    #[allow(unused)] pub function: FunctionCall,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct CustomCall {
+    #[allow(unused)] pub input: String,
+    #[allow(unused)] pub name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct CustomToolCall {
+    #[allow(unused)] pub id: String,
+    #[allow(unused)] pub custom: CustomCall,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionMessageToolCall {
+    #[allow(unused)] Function(FunctionToolCall),
+    #[allow(unused)] Custom(CustomToolCall),
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionAssistantMessageParam {
+    #[allow(unused)] pub audio: Option<Audio>,
+    #[allow(unused)] pub content: Option<ChatCompletionContentTextOrRefusal>,
+    #[deprecated(note = "replaced by tool_calls")]
+    #[allow(unused)]
+    pub function_call: Option<FunctionCall>,
+    #[allow(unused)] pub name: Option<String>,
+    #[allow(unused)] pub refusal: Option<String>,
+    #[allow(unused)] pub tool_calls: Option<Vec<ChatCompletionMessageToolCall>>,
 }
 
 #[derive(Debug, Deserialize)]
