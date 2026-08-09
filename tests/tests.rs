@@ -104,7 +104,14 @@ async fn test_chat_completions() {
             {"role": "assistant", "tool_calls": [
                 {"id": "hello world", "type": "function", "function": {"arguments": "hello world", "name": "hello world"}},
                 {"id": "hello world", "type": "custom", "custom": {"input": "hello world", "name": "hello world"}}
-            ]}
+            ]},
+            {"role": "tool", "tool_call_id": "hello world", "content": "hello world"},
+            {"role": "tool", "tool_call_id": "hello world", "content": [
+                {"type": "text", "text": "hello world"},
+                {"type": "text", "text": "hello world"}
+            ]},
+            {"role": "function", "name": "hello world"},
+            {"role": "function", "name": "hello world", "content": "hello world"}
         ]}"#
     ).await;
 

@@ -15,6 +15,8 @@ pub(crate) enum ChatCompletionMessageParam {
     #[allow(unused)] System(ChatCompletionSystemMessageParam),
     #[allow(unused)] User(ChatCompletionUserMessageParam),
     #[allow(unused)] Assistant(ChatCompletionAssistantMessageParam),
+    #[allow(unused)] Tool(ChatCompletionToolMessageParam),
+    #[allow(unused)] Function(ChatCompletionFunctionMessageParam),
 }
 
 #[derive(Debug, Deserialize)]
@@ -195,6 +197,18 @@ pub(crate) struct ChatCompletionAssistantMessageParam {
     #[allow(unused)] pub name: Option<String>,
     #[allow(unused)] pub refusal: Option<String>,
     #[allow(unused)] pub tool_calls: Option<Vec<ChatCompletionMessageToolCall>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionToolMessageParam {
+    #[allow(unused)] pub content: ChatCompletionContentTextOnly,
+    #[allow(unused)] pub tool_call_id: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionFunctionMessageParam {
+    #[allow(unused)] pub content: Option<String>,
+    #[allow(unused)] pub name: String,
 }
 
 #[derive(Debug, Deserialize)]
