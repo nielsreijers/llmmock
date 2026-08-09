@@ -13,13 +13,118 @@ pub(crate) struct ChatCompletionRequest {
 pub(crate) enum ChatCompletionMessageParam {
     #[allow(unused)] Developer(ChatCompletionDeveloperMessageParam),
     #[allow(unused)] System(ChatCompletionSystemMessageParam),
+    #[allow(unused)] User(ChatCompletionUserMessageParam),
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
-pub(crate) enum ChatCompletionMessageContentText {
+pub(crate) enum ChatCompletionContentTextOnly {
     #[allow(unused)] Text(String),
-    #[allow(unused)] Structured(Vec<ChatCompletionMessageContentPartText>),
+    #[allow(unused)] Structured(Vec<ChatCompletionContentPartTextOnly>),
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionContentPartTextOnlyType {
+    Text,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionContentPartTextOnly {
+    #[allow(unused)] pub text: String,
+    #[allow(unused)] pub r#type: ChatCompletionContentPartTextOnlyType,
+    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub(crate) enum ChatCompletionContent {
+    #[allow(unused)] Text(String),
+    #[allow(unused)] Structured(Vec<ChatCompletionContentPart>),
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ChatCompletionContentPart {
+    #[allow(unused)] Text(ChatCompletionContentPartText),
+    #[allow(unused)] ImageUrl(ChatCompletionContentPartImage),
+    #[allow(unused)] InputAudio(ChatCompletionContentPartInputAudio),
+    #[allow(unused)] File(FileContentPart),
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionContentPartText {
+    #[allow(unused)] pub text: String,
+    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ImageUrl {
+    #[allow(unused)] pub url: String,
+    #[allow(unused)] pub detail: Option<ImageUrlDetail>,
+}
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ImageUrlDetail {
+    Auto,
+    Low,
+    High,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionContentPartImage {
+    #[allow(unused)] pub image_url: ImageUrl,
+    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct InputAudio {
+    #[allow(unused)] pub data: String,
+    #[allow(unused)] pub format: InputAudioFormat,
+}
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum InputAudioFormat {
+    Wav,
+    Mp3,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionContentPartInputAudio {
+    #[allow(unused)] pub input_audio: InputAudio,
+    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct File {
+    #[allow(unused)] pub file_data: Option<String>,
+    #[allow(unused)] pub file_id: Option<String>,
+    #[allow(unused)] pub filename: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct FileContentPart {
+    #[allow(unused)] pub file: File,
+    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionDeveloperMessageParam {
+    #[allow(unused)] pub content: ChatCompletionContentTextOnly,
+    #[allow(unused)] pub name: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionSystemMessageParam {
+    #[allow(unused)] pub content: ChatCompletionContentTextOnly,
+    #[allow(unused)] pub name: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionUserMessageParam {
+    #[allow(unused)] pub content: ChatCompletionContent,
+    #[allow(unused)] pub name: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,29 +136,4 @@ pub(crate) enum ChatCompletionPromptCacheBreakpointMode {
 #[derive(Debug, Deserialize)]
 pub(crate) struct ChatCompletionPromptCacheBreakpoint {
     #[allow(unused)] mode: ChatCompletionPromptCacheBreakpointMode,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub(crate) enum ChatCompletionMessageContentPartTextType {
-    Text,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ChatCompletionMessageContentPartText {
-    #[allow(unused)] pub text: String,
-    #[allow(unused)] pub r#type: ChatCompletionMessageContentPartTextType,
-    #[allow(unused)] pub prompt_cache_breakpoint: Option<ChatCompletionPromptCacheBreakpoint>,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ChatCompletionDeveloperMessageParam {
-    #[allow(unused)] pub content: ChatCompletionMessageContentText,
-    #[allow(unused)] pub name: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ChatCompletionSystemMessageParam {
-    #[allow(unused)] pub content: ChatCompletionMessageContentText,
-    #[allow(unused)] pub name: Option<String>,
 }

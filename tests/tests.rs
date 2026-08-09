@@ -72,14 +72,24 @@ async fn test_chat_completions() {
         "model": "mocked-model",
         "messages": [
             {"role": "developer", "content": "hello 1"},
-            {"role": "developer", "content": [
+            {"role": "developer", "name": "myname", "content": [
                 {"type": "text", "text": "hello 3", "prompt_cache_breakpoint": {"mode": "explicit"}},
                 {"type": "text", "text": "hello 4"}
             ]},
             {"role": "system", "content": "hello 5"},
-            {"role": "system", "content": [
-                {"type": "text", "text": "hello 6", "prompt_cache_breakpoint": {"mode": "explicit"}},
+            {"role": "system", "name": "myname", "content": [
+                {"type": "text", "text": "hello 6"},
                 {"type": "text", "text": "hello 7"}
+            ]},
+            {"role": "user", "content": "hello 8"},
+            {"role": "user", "name": "myname", "content": [
+                {"type": "text", "text": "hello 9"},
+                {"type": "text", "text": "hello 10"},
+                {"type": "image_url", "image_url": {"url": "hello 11"}},
+                {"type": "image_url", "image_url": {"url": "hello 12", "detail": "low"}},
+                {"type": "input_audio", "input_audio": {"data": "hello 13", "format": "wav"}},
+                {"type": "file", "file": {"file_data": "hello 14", "file_id": "hello 15", "filename": "hello 16"}},
+                {"type": "file", "file": {}}
             ]}
         ]}"#
     ).await;
