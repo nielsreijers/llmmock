@@ -56,11 +56,15 @@ async fn test_chat_completions() {
         };
 
         if ok {
-            assert!(status.is_success(), "{status}: {body}");
-            assert_eq!(status, reqwest::StatusCode::OK, "{status}: {body}");
+            assert!(status.is_success(), "REQ: {req}\nRESP: {status}: {body}");
+            assert_eq!(status, reqwest::StatusCode::OK, "REQ: {req}\nRESP: {status}: {body}");
         } else {
-            assert!(status.is_client_error(), "{status}: {body}");
-            assert_eq!(status, reqwest::StatusCode::BAD_REQUEST, "{status}: {body}");
+            assert!(status.is_client_error(), "REQ: {req}\nRESP: {status}: {body}");
+            assert_eq!(
+                status,
+                reqwest::StatusCode::BAD_REQUEST,
+                "REQ: {req}\nRESP: {status}: {body}"
+            );
         }
     };
     let test_ok = async |req| test(req, true).await;
@@ -163,7 +167,47 @@ async fn test_chat_completions() {
         r#"{
             "model": "mocked-model",
             "messages": [{"role": "developer", "content": "hello world"}],
-            "frequency_penalty": 0.0
+            "metadata": {
+                "hello world": "hello world"
+            }
+        }"#
+    ).await;
+
+    test_nok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "metadata": {
+                "hello world": 1
+            }
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "logit_bias": {"12345": -100, "654321": 100}
+        }"#
+    ).await;
+
+    test_nok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "logit_bias": {"hello world": 100}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "frequency_penalty": 0.0,
+            "log_probs": true,
+            "max_completion_tokens": 654321,
+            "max_tokens": 654321,
+            "modalities": ["text", "audio"]
         }"#
     ).await;
 

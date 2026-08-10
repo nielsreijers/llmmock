@@ -1,5 +1,7 @@
+use std::collections::HashMap;
+
 use serde_derive::Deserialize;
-use serde_json::Value;
+use serde_json::{ Value };
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct ChatCompletionRequest {
@@ -9,6 +11,15 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub frequency_penalty: Option<f32>,
     #[allow(unused)] pub function_call: Option<ChatCompletionFunctionCallOption>,
     #[allow(unused)] pub functions: Option<Vec<ChatCompletionFunction>>,
+    #[allow(unused)] pub logit_bias: Option<HashMap<u32, i8>>,
+    #[allow(unused)] pub log_probs: Option<bool>,
+    #[allow(unused)] pub max_completion_tokens: Option<u32>,
+    #[deprecated(note = "replaced by max_completion_tokens")]
+    #[allow(unused)]
+    pub max_tokens: Option<u32>,
+    #[allow(unused)] pub metadata: Option<HashMap<String, String>>,
+    #[allow(unused)] pub modalities: Option<Vec<Modality>>,
+
     #[allow(unused)] pub stream: Option<bool>,
 }
 
@@ -252,4 +263,11 @@ pub(crate) struct ChatCompletionFunction {
     #[allow(unused)] name: String,
     #[allow(unused)] description: Option<String>,
     #[allow(unused)] parameters: Option<Value>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum Modality {
+    #[allow(unused)] Text,
+    #[allow(unused)] Audio,
 }
