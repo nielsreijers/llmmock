@@ -227,11 +227,79 @@ async fn test_chat_completions() {
         r#"{
             "model": "mocked-model",
             "messages": [{"role": "developer", "content": "hello world"}],
+            "prediction": {"content": "hello world", "type": "content"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prediction": {"content": [{"type": "text", "text": "hello world"}], "type": "content"}
+        }"#
+    ).await;
+
+    test_nok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prediction": {"content": [{"type": "text", "text": "hello world"}], "type": "text"}
+        }"#
+    ).await;
+
+    test_nok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prediction": {"content": [{"type": "image_url", "image_url": {"url": "hello world"}}], "type": "content"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prompt_cache_options": {"mode": "implicit"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prompt_cache_options": {"ttl": "30m"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prompt_cache_retention": "in_memory"
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "prompt_cache_retention": "24h"
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
             "frequency_penalty": 0.0,
             "log_probs": true,
             "max_completion_tokens": 654321,
             "max_tokens": 654321,
-            "modalities": ["text", "audio"]
+            "modalities": ["text", "audio"],
+            "n": 128,
+            "parallel_tool_calls": true,
+            "presence_penalty": 2.0,
+            "prompt_cache_key": "hello world"
         }"#
     ).await;
 

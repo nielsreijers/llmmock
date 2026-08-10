@@ -20,6 +20,15 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub metadata: Option<HashMap<String, String>>,
     #[allow(unused)] pub modalities: Option<Vec<Modality>>,
     #[allow(unused)] pub moderation: Option<Moderation>,
+    #[allow(unused)] pub n: Option<u8>,
+    #[allow(unused)] pub parallel_tool_calls: Option<bool>,
+    #[allow(unused)] pub prediction: Option<PredictionContent>,
+    #[allow(unused)] pub presence_penalty: Option<f32>,
+    #[allow(unused)] pub prompt_cache_key: Option<String>,
+    #[allow(unused)] pub prompt_cache_options: Option<PromptCacheOptions>,
+    #[deprecated(note = "replaced by prompt_cache_options")]
+    #[allow(unused)]
+    pub prompt_cache_retention: Option<PromptCacheRetention>,
 
     #[allow(unused)] pub stream: Option<bool>,
 }
@@ -295,4 +304,44 @@ pub(crate) struct ModerationPolicy {
 pub(crate) struct Moderation {
     #[allow(unused)] model: String,
     #[allow(unused)] policy: Option<ModerationPolicy>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum PredictionContentType {
+    Content,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct PredictionContent {
+    #[allow(unused)] content: ChatCompletionContentTextOnly,
+    #[allow(unused)] r#type: PredictionContentType,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum PromptCacheMode {
+    Implicit,
+    Explicit,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum PromptCacheTtl {
+    #[serde(rename = "30m")]
+    ThirtyMinutes,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct PromptCacheOptions {
+    #[allow(unused)] mode: Option<PromptCacheMode>,
+    #[allow(unused)] ttl: Option<PromptCacheTtl>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum PromptCacheRetention {
+    InMemory,
+    #[serde(rename = "24h")]
+    TwentyFourHours,
 }
