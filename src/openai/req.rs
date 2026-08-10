@@ -1,4 +1,5 @@
 use serde_derive::Deserialize;
+use serde_json::Value;
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct ChatCompletionRequest {
@@ -7,6 +8,7 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub audio: Option<ChatCompletionAudioParam>,
     #[allow(unused)] pub frequency_penalty: Option<f32>,
     #[allow(unused)] pub function_call: Option<ChatCompletionFunctionCallOption>,
+    #[allow(unused)] pub functions: Option<Vec<ChatCompletionFunction>>,
     #[allow(unused)] pub stream: Option<bool>,
 }
 
@@ -243,4 +245,11 @@ pub(crate) enum ChatCompletionFunctionCallOption {
     #[allow(unused)] Name {
         name: String,
     },
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatCompletionFunction {
+    #[allow(unused)] name: String,
+    #[allow(unused)] description: Option<String>,
+    #[allow(unused)] parameters: Option<Value>,
 }
