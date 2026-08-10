@@ -19,6 +19,7 @@ pub(crate) struct ChatCompletionRequest {
     pub max_tokens: Option<u32>,
     #[allow(unused)] pub metadata: Option<HashMap<String, String>>,
     #[allow(unused)] pub modalities: Option<Vec<Modality>>,
+    #[allow(unused)] pub moderation: Option<Moderation>,
 
     #[allow(unused)] pub stream: Option<bool>,
 }
@@ -270,4 +271,28 @@ pub(crate) struct ChatCompletionFunction {
 pub(crate) enum Modality {
     #[allow(unused)] Text,
     #[allow(unused)] Audio,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ModerationPolicyMode {
+    #[allow(unused)] Score,
+    #[allow(unused)] Block,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ModerationPolicyPart {
+    #[allow(unused)] mode: ModerationPolicyMode,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ModerationPolicy {
+    #[allow(unused)] input: Option<ModerationPolicyPart>,
+    #[allow(unused)] output: Option<ModerationPolicyPart>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct Moderation {
+    #[allow(unused)] model: String,
+    #[allow(unused)] policy: Option<ModerationPolicy>,
 }

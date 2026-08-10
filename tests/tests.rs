@@ -203,6 +203,30 @@ async fn test_chat_completions() {
         r#"{
             "model": "mocked-model",
             "messages": [{"role": "developer", "content": "hello world"}],
+            "moderation": {"model": "hello world"}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "moderation": {"model": "hello world", "policy": {"input": {"mode": "score"}}}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "moderation": {"model": "hello world", "policy": {"output": {"mode": "block"}}}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
             "frequency_penalty": 0.0,
             "log_probs": true,
             "max_completion_tokens": 654321,
