@@ -402,7 +402,12 @@ async fn test_chat_completions() {
             "store": true,
             "stream": true,
             "stream_options": {"include_obfuscation": true, "include_usage": true},
-            "temperature": 0.2
+            "temperature": 0.2,
+            "top_logprobs": 2,
+            "top_p": 0.2,
+            "user": "hello world",
+            "verbosity": "low",
+            "web_search_options": {"search_context_size": "medium", "user_location": {"hello world": "hello world"}}
         }"#
     ).await;
 

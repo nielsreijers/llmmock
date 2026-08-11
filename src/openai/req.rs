@@ -41,6 +41,11 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub temperature: Option<f32>,
     #[allow(unused)] pub tool_choice: Option<ToolChoice>,
     #[allow(unused)] pub tools: Option<Vec<Tool>>,
+    #[allow(unused)] pub top_logprobs: Option<u8>,
+    #[allow(unused)] pub top_p: Option<f32>,
+    #[allow(unused)] pub user: Option<String>,
+    #[allow(unused)] pub verbosity: Option<Verbosity>,
+    #[allow(unused)] pub web_search_options: Option<WebSearchOptions>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -499,4 +504,26 @@ pub(crate) enum Tool {
     #[allow(unused)] Custom {
         custom: CustomTool,
     },
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum Verbosity {
+    Low,
+    Medium,
+    High,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum WebSearchContextSize {
+    Low,
+    Medium,
+    High,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct WebSearchOptions {
+    #[allow(unused)] search_context_size: Option<WebSearchContextSize>,
+    #[allow(unused)] user_location: Option<Value>,
 }
