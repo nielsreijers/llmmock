@@ -29,6 +29,8 @@ pub(crate) struct ChatCompletionRequest {
     #[deprecated(note = "replaced by prompt_cache_options")]
     #[allow(unused)]
     pub prompt_cache_retention: Option<PromptCacheRetention>,
+    #[allow(unused)] pub reasoning_effort: Option<ReasoningEffort>,
+    #[allow(unused)] pub response_format: Option<ResponseFormat>,
 
     #[allow(unused)] pub stream: Option<bool>,
 }
@@ -344,4 +346,35 @@ pub(crate) enum PromptCacheRetention {
     InMemory,
     #[serde(rename = "24h")]
     TwentyFourHours,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ReasoningEffort {
+    None,
+    Minimal,
+    Low,
+    Medium,
+    High,
+    Xhigh,
+    Max,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct JsonSchema {
+    #[allow(unused)] name: String,
+    #[allow(unused)] description: Option<String>,
+    #[allow(unused)] schema: Option<Value>,
+    #[allow(unused)] strict: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
+pub(crate) enum ResponseFormat {
+    #[allow(unused)] Text,
+    #[allow(unused)] JsonSchema {
+        json_schema: JsonSchema,
+    },
+    #[allow(unused)] JsonObject,
 }
