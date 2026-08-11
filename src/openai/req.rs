@@ -38,6 +38,8 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub store: Option<bool>,
     #[allow(unused)] pub stream: Option<bool>,
     #[allow(unused)] pub stream_options: Option<StreamOptions>,
+    #[allow(unused)] pub temperature: Option<f32>,
+    #[allow(unused)] pub tool_choice: Option<ToolChoice>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -407,4 +409,43 @@ pub(crate) enum Stop {
 pub(crate) struct StreamOptions {
     #[allow(unused)] include_obfuscation: Option<bool>,
     #[allow(unused)] include_usage: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ToolChoiceMode {
+    #[allow(unused)] None,
+    #[allow(unused)] Auto,
+    #[allow(unused)] Required,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum AllowedToolsMode {
+    #[allow(unused)] Auto,
+    #[allow(unused)] Required,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
+pub(crate) enum ToolChoiceComplex {
+    #[allow(unused)] AllowedTools {
+        mode: AllowedToolsMode,
+        tools: Vec<Value>,
+    },
+    #[allow(unused)] Function {
+        function: String,
+    },
+    #[allow(unused)] Custom {
+        custom: String,
+    },
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(untagged)]
+pub(crate) enum ToolChoice {
+    #[allow(unused)] Mode(ToolChoiceMode),
+    #[allow(unused)] Complex(ToolChoiceComplex),
 }
