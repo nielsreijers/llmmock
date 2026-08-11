@@ -31,8 +31,13 @@ pub(crate) struct ChatCompletionRequest {
     pub prompt_cache_retention: Option<PromptCacheRetention>,
     #[allow(unused)] pub reasoning_effort: Option<ReasoningEffort>,
     #[allow(unused)] pub response_format: Option<ResponseFormat>,
-
+    #[allow(unused)] pub safety_identifier: Option<String>,
+    #[allow(unused)] pub seed: Option<u64>,
+    #[allow(unused)] pub service_tier: Option<ServiceTier>,
+    #[allow(unused)] pub stop: Option<Stop>,
+    #[allow(unused)] pub store: Option<bool>,
     #[allow(unused)] pub stream: Option<bool>,
+    #[allow(unused)] pub stream_options: Option<StreamOptions>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -377,4 +382,29 @@ pub(crate) enum ResponseFormat {
         json_schema: JsonSchema,
     },
     #[allow(unused)] JsonObject,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum ServiceTier {
+    Auto,
+    Default,
+    Flex,
+    Scale,
+    Priority,
+    Fast,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(untagged)]
+pub(crate) enum Stop {
+    #[allow(unused)] String(String),
+    #[allow(unused)] List(Vec<String>),
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct StreamOptions {
+    #[allow(unused)] include_obfuscation: Option<bool>,
+    #[allow(unused)] include_usage: Option<bool>,
 }

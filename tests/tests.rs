@@ -320,6 +320,35 @@ async fn test_chat_completions() {
         r#"{
             "model": "mocked-model",
             "messages": [{"role": "developer", "content": "hello world"}],
+            "stop": "hello world"
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "stop": ["hello world", "hello world"]
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
+            "response_format": { "type": "json_schema", "json_schema": {        
+                "name": "hello world",
+                "description": "hello world",
+                "schema": {"hello world": "hello world"},
+                "strict": false
+            }}
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
             "frequency_penalty": 0.0,
             "log_probs": true,
             "max_completion_tokens": 654321,
@@ -329,7 +358,13 @@ async fn test_chat_completions() {
             "parallel_tool_calls": true,
             "presence_penalty": 2.0,
             "prompt_cache_key": "hello world",
-            "reasoning_effort": "medium"
+            "reasoning_effort": "medium",
+            "safety_identifier": "hello world",
+            "seed": 9223372036854776000,
+            "store": true,
+            "stream": true,
+            "stream_options": {"include_obfuscation": true, "include_usage": true},
+            "temperature": 0.2
         }"#
     ).await;
 
