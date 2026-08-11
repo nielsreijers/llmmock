@@ -40,6 +40,7 @@ pub(crate) struct ChatCompletionRequest {
     #[allow(unused)] pub stream_options: Option<StreamOptions>,
     #[allow(unused)] pub temperature: Option<f32>,
     #[allow(unused)] pub tool_choice: Option<ToolChoice>,
+    #[allow(unused)] pub tools: Option<Vec<Tool>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -448,4 +449,54 @@ pub(crate) enum ToolChoiceComplex {
 pub(crate) enum ToolChoice {
     #[allow(unused)] Mode(ToolChoiceMode),
     #[allow(unused)] Complex(ToolChoiceComplex),
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct FunctionTool {
+    #[allow(unused)] name: String,
+    #[allow(unused)] description: Option<String>,
+    #[allow(unused)] parameters: Option<Value>,
+    #[allow(unused)] strict: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum CustomToolFormatGrammarSyntax {
+    #[allow(unused)] Lark,
+    #[allow(unused)] Regex,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct CustomToolFormatGrammar {
+    #[allow(unused)] pub definition: String,
+    #[allow(unused)] pub syntax: CustomToolFormatGrammarSyntax,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
+pub(crate) enum CustomToolFormat {
+    #[allow(unused)] Text,
+    #[allow(unused)] Grammar {
+        grammar: CustomToolFormatGrammar,
+    },
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct CustomTool {
+    #[allow(unused)] name: String,
+    #[allow(unused)] description: Option<String>,
+    #[allow(unused)] format: Option<CustomToolFormat>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
+pub(crate) enum Tool {
+    #[allow(unused)] Function {
+        function: FunctionTool,
+    },
+    #[allow(unused)] Custom {
+        custom: CustomTool,
+    },
 }

@@ -373,6 +373,20 @@ async fn test_chat_completions() {
         r#"{
             "model": "mocked-model",
             "messages": [{"role": "developer", "content": "hello world"}],
+            "tools": [
+                {"type": "function", "function": {"name": "hello world"}},
+                {"type": "function", "function": {"name": "hello world", "description": "hello world", "parameters": {"hello world": "hello world"}, "strict": true}},
+                {"type": "custom", "custom": {"name": "hello world"}},
+                {"type": "custom", "custom": {"name": "hello world", "description": "hello world", "format": {"type": "text"}}},
+                {"type": "custom", "custom": {"name": "hello world", "description": "hello world", "format": {"type": "grammar", "grammar": {"definition": "hello world", "syntax": "lark"}}}}
+            ]
+        }"#
+    ).await;
+
+    test_ok(
+        r#"{
+            "model": "mocked-model",
+            "messages": [{"role": "developer", "content": "hello world"}],
             "frequency_penalty": 0.0,
             "log_probs": true,
             "max_completion_tokens": 654321,
